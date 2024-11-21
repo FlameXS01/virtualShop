@@ -1,12 +1,28 @@
 const express = require('express');
-const app = express();
-require('./helpers/database'); 
+const sequelize = require("./helpers/database.js");  
 
-app.get('/', (req, res) => {
-  res.send('¡Hola, mundo!');
+
+
+const Storage = require("./models/inventario"); 
+const Locality = require("./models/localidad"); 
+const Product = require("./models/product");
+const Request = require("./models/request");
+const Unity = require("./models/unidad");
+
+
+const app = express();
+
+sequelize
+.sync({ alter: true })
+.then(() => {
+console.log("Todos los modelos se sincronizaron correctamente.");
+}) .catch((err) => {
+console.log("Ha ocurrido un error al sincronizar los modelos: ", err); 
 });
+
 
 
 app.listen(3000, () => {
   console.log('Servidor iniciado en el puerto 3000');
 });
+
