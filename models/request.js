@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../helpers/database");
 const Product = require('./product')
+const Unity = require('./unidad')
 
 const Request = sequelize.define("request", {
     request_date: {
