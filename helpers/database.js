@@ -14,14 +14,5 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     logging: false,
 });
 
-// Función para comprobar que salió bien la conexión con la base de datos
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Conexión establecida correctamente.");
-  })
-  .catch((err) => {
-    console.error("Error al conectarse a la base de datos:", err);
-  });
 
 module.exports = sequelize;
