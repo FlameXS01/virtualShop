@@ -2,6 +2,7 @@ const express = require('express');
 const sequelize = require("./helpers/database.js");  
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const routes = require('./routes');
 
 const app = express();
 
@@ -21,6 +22,14 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Middleware para manejar JSON y datos de formularios
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Usa las rutas de index
+app.use('/api', routes); // Prefijo para todas las rutas
+
 
 // Sincronización de modelos
 sequelize.sync({ alter: true })

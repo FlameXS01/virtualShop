@@ -1,72 +1,51 @@
-const Storage = require('../models/inventario'); 
+const Inventario = require('../models/Inventario'); 
 
-// Controlador para crear un nuevo inventario
-const crearInventario = async (req, res) => {
-    const { last_review, unity_id } = req.body; 
-    try {
-        const nuevoInventario = await Storage.create({ last_review, unity_id });
-        res.status(201).json(nuevoInventario);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al crear el inventario' });
-    }
-};
+// Crear un nuevo inventario
+async function crearInventario(data) {
+    const nuevoInventario = await Inventario.create(data);
+    return nuevoInventario;
+}
 
-// Controlador para obtener todos los almacenamientos
-const obtenerInventarios = async (req, res) => {
-    try {
-        const inventarios = await Storage.findAll();
-        res.status(200).json(inventarios);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al obtener los inventarios' });
-    }
-};
+// Obtener todos los inventarios
+async function obtenerInventarios() {
+    return await Inventario.findAll();
+}
 
-// Controlador para obtener un almacenamiento por ID
-const obtenerInventarioById = async (id) => {
-    try {
-        const inventarios = await Storage.findByPk(id);
-        if (!inventarios) {
-            throw new Error('Inventario no encontrado');
-        }
-        return inventario;
-    } catch (error) {
-        throw error;
+// Obtener un inventario por ID
+async function obtenerInventarioPorId(id) {
+    const inventario = await Inventario.findByPk(id);
+    if (!inventario) {
+        throw new Error('Inventario no encontrado');
     }
-};
+    return inventario;
+}
 
-// Controlador para actualizar un almacenamiento
-const actualizarInventario = async (id, data) => {
-    try {
-        const inventario = await Storage.findByPk(id);
-        if (!inventario) {
-            throw new Error('Inventario no encontrado');
-        }
-        await inventario.update(data);
-        return inventario;
-    } catch (error) {
-        throw error;
+// Actualizar un inventario
+async function actualizarInventario(id, data) {
+    const [numeroFilasActualizadas, [inventarioActualizado]] = await Inventario.update(data, {
+        where: { id },
+        returning: true,
+    });
+    if (numeroFilasActualizadas === 0) {
+        throw new Error('Inventario no encontrado');
     }
-};
+    return inventarioActualizado;
+}
 
-// Controlador para eliminar un almacenamiento
-const eliminarInventario = async (id) => {
-    try {
-        const inventario = await Storage.findByPk(id);
-        if (!inventario) {
-            throw new Error('Inventario no encontrado');
-        }
-        await inventario.destroy();
-    } catch (error) {
-        throw error;
+// Eliminar un inventario
+async function eliminarInventario(id) {
+    const inventarioEliminado = await Inventario.destroy({
+        where: { id },
+    });
+    if (!inventarioEliminado) {
+        throw new Error('Inventario no encontrado');
     }
-};
+}
 
 module.exports = {
     crearInventario,
     obtenerInventarios,
-    obtenerInventarioById,
+    obtenerInventarioPorId,
     actualizarInventario,
     eliminarInventario,
 };
