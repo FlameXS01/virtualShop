@@ -116,13 +116,9 @@ router.get('/inventarios-by-id/:id', async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               nombre:
+ *               last_review:
  *                 type: string
- *               cantidad:
- *                 type: integer
- *               precio:
- *                 type: number
- *                 format: float
+ *                 format: date-time
  *     responses:
  *       200:
  *         description: Inventario actualizado con éxito

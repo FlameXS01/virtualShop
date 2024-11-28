@@ -12,7 +12,7 @@ async function obtenerInventarios() {
 }
 
 // Obtener un inventario por ID
-async function obtenerInventarioPorId(id) {
+async function obtenerInventarioById(id) {
     const inventario = await Inventario.findByPk(id);
     if (!inventario) {
         throw new Error('Inventario no encontrado');
@@ -22,14 +22,11 @@ async function obtenerInventarioPorId(id) {
 
 // Actualizar un inventario
 async function actualizarInventario(id, data) {
-    const [numeroFilasActualizadas, [inventarioActualizado]] = await Inventario.update(data, {
-        where: { id },
-        returning: true,
-    });
-    if (numeroFilasActualizadas === 0) {
-        throw new Error('Inventario no encontrado');
+    const inventario = await Inventario.findByPk(id);
+    if (inventario) {
+        return await inventario.update(data);
     }
-    return inventarioActualizado;
+    return null; 
 }
 
 // Eliminar un inventario
@@ -45,7 +42,7 @@ async function eliminarInventario(id) {
 module.exports = {
     crearInventario,
     obtenerInventarios,
-    obtenerInventarioPorId,
+    obtenerInventarioById,
     actualizarInventario,
     eliminarInventario,
 };
