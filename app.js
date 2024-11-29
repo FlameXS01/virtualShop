@@ -21,9 +21,9 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Título del Swagger',
-      version: '1.0',
-      description: 'Descripción',
+      title: 'Fusion Hub',
+      version: '0.0',
+      description: 'Nexus Store es un espacio innovador que conecta estilo y creatividad. Con varias sucursales en la ciudad, cada tienda ofrece un ambiente único donde explorar tendencias, descubrir productos originales y disfrutar de una experiencia de compra inspiradora.',
     },
   },
   apis: ['./routes/*.js', './models/*.js'],
