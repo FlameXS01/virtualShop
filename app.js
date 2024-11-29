@@ -3,8 +3,17 @@ const sequelize = require("./helpers/database.js");
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const routes = require('./routes');
+require ('dotenv').config()
+
+const cors = require('cors');
+const morgan = require('morgan');
+
+
 
 const app = express();
+app.use(cors(corsOptions));
+app.use(morgan('dev'));
+
 
 
 // Configuración de Swagger
@@ -30,6 +39,16 @@ app.use(express.urlencoded({ extended: true }));
 // Usa las rutas de index
 app.use('/api', routes); // Prefijo para todas las rutas
 
+
+// config del cors
+const allowedOrigins = ['http://localhost:3000'];
+app.use(
+  cors({
+    origin : allowedOrigins,
+    metods : ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials : true,
+  })
+);
 
 // Sincronización de modelos
 sequelize.sync({ alter: true })
