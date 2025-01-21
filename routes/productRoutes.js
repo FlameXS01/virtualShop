@@ -53,7 +53,11 @@ const {
  */
 router.post('/add-productos', async (req, res) => {
     try {
-        const nuevoProducto = await crearProducto(req.body); 
+        const  {cod_ub, cod_prod, desc_prod, h_much, unit, price, unityIds} = req.body;
+        const nuevoProducto = await crearProducto(
+            {cod_ub, cod_prod, desc_prod, h_much, unit, price}, 
+            unityIds
+        ); 
         res.status(201).json(nuevoProducto);
     } catch (error) {
         res.status(500).json({ error: error.message });

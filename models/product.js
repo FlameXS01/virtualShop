@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../helpers/database");
+const Unity = require('./unidad')
 
 const Product = sequelize.define("product", {
     cod_ub: {
@@ -32,5 +33,7 @@ const Product = sequelize.define("product", {
     timestamps: true,
     paranoid: true,
 });
+
+
 
 module.exports = Product;

@@ -1,13 +1,22 @@
 const Product = require('../models/product'); 
+const Unity = require("../models/unidad");
 
 // Crear un nuevo producto
-async function crearProducto(data) {
-    const nuevoProducto = await Product.create(data);
-    // Si tienes IDs de unidades que deseas asociar, puedes hacer algo como esto:
-    if (data.unityIds && data.unityIds.length > 0) {
-        await nuevoProducto.addUnities(data.unityIds); // Esto establece la relación
-    }
+async function crearProducto(data, unityIds) {
 
+    const nuevoProducto = await Product.create(data);
+    console.log(Object.keys(nuevoProducto.__proto__));
+    
+    // Si tienes IDs de unidades que deseas asociar, puedes hacer algo como esto:
+    if (unityIds && unityIds.length > 0) {
+
+        const unidadesEncontradas = await Unity.findAll({
+            where: {
+                id: unityIds,
+            },
+        });
+        await nuevoProducto.addUnity(unidadesEncontradas);
+    }
 
     return nuevoProducto;
 
@@ -15,7 +24,8 @@ async function crearProducto(data) {
 
 // Obtener todos los productos
 async function obtenerProductos() {
-    return await Product.findAll();
+    const productos = await Product.findAll();
+        return productos;
 }
 
 // Obtener un producto por ID

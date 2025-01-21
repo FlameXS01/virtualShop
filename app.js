@@ -3,18 +3,20 @@ const sequelize = require("./helpers/database.js");
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const routes = require('./routes');
-require ('dotenv').config()
+require('dotenv').config();
+const requestLogger = require("./middlewares/requestLogger.js")
+const errorHandler = require('./middlewares/errorHandler.js');
+const logger = require('./logger/log'); 
 
 const cors = require('cors');
-const morgan = require('morgan');
-
-
 
 const app = express();
-app.use(cors(corsOptions));
-app.use(morgan('dev'));
 
-
+// Middleware para registrar las solicitudes
+app.use((req, res, next) => {
+  logger.info(`Request: ${req.method} ${req.url}`);
+  next();
+});
 
 // Configuración de Swagger
 const swaggerOptions = {
@@ -36,31 +38,32 @@ app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Usa las rutas de index
-app.use('/api', routes); // Prefijo para todas las rutas
+// Configuración de CORS
+const allowedOrigins = ['http://localhost:3000']; // Agrega tus orígenes permitidos aquí
 
-
-// config del cors
-const allowedOrigins = ['http://localhost:3000'];
 app.use(
   cors({
-    origin : allowedOrigins,
-    metods : ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials : true,
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+    credentials: true, // Permitir el envío de cookies
   })
 );
+
+// Usa las rutas de index
+app.use('/api', routes); // Prefijo para todas las rutas
 
 // Sincronización de modelos
 sequelize.sync({ alter: true })
   .then(() => {
-    console.log("Todos los modelos se sincronizaron correctamente.");
+    logger.info("Todos los modelos se sincronizaron correctamente."); // Usa logger aquí
   })
   .catch((err) => {
-    console.log("Ha ocurrido un error al sincronizar los modelos: ", err);
+    logger.error("Ha ocurrido un error al sincronizar los modelos: ", err); // Usa logger aquí
   });
 
+  app.use(errorHandler);
+  app.use(requestLogger);
 // Iniciar el servidor
-app.listen(3000, () => {
-  console.log('Servidor iniciado en http://localhost:3000/');
+app.listen(3001, () => {
+  logger.info('Servidor iniciado en http://localhost:3001/'); // Usa logger aquí
 });
-

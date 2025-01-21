@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize')
 const sequelize = require('../helpers/database')
 const Product = require('./product')
 
+
 const Unity = sequelize.define("unity", {
     unity_name: {
         type: DataTypes.STRING,
@@ -27,5 +28,10 @@ Unity.belongsToMany(Product, {
     onUpdate: 'CASCADE'
 });
 
+Product.belongsToMany(Unity, {
+    through: "UnityProduct",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+});
 
 module.exports = Unity;

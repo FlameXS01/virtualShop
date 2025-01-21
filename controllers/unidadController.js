@@ -9,9 +9,7 @@ async function crearUnidad(data) {
 
 // Obtener todas las unidades
 async function obtenerUnidades() {
-    return await Unity.findAll({
-        include: Product // Incluye los productos relacionados
-    });
+    return await Unity.findAll({include: Product});
 }
 
 // Obtener una unidad por ID
