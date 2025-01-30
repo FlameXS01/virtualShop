@@ -128,5 +128,11 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-.jpg 
-.png 
+
+
+/public/images/
+
+*.jpg
+*.jpeg
+*.png
+*.gif
