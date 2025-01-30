@@ -15,6 +15,7 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     port: DB_PORT,
     logging: console.log, // Solo esta línea para logging
     native: true,
+    dialectModule: pg,
     dialectOptions: { // <-- Agrega esto para SSL
         ssl: {
         require: true,
