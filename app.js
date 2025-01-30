@@ -52,6 +52,7 @@ app.use(
 // Usa las rutas de index
 app.use('/api', routes); // Prefijo para todas las rutas
 
+
 // Sincronización de modelos
 sequelize.sync({ alter: true })
   .then(() => {

@@ -1,15 +1,15 @@
 const Product = require('../models/product'); 
 const Unity = require("../models/unidad");
+const path = require('path');
+const deleteFile  = require('../utils/fileUtils');
 
 // Crear un nuevo producto
 async function crearProducto(data, unityIds) {
 
     const nuevoProducto = await Product.create(data);
-    console.log(Object.keys(nuevoProducto.__proto__));
+    //console.log(Object.keys(nuevoProducto.__proto__));
     
-    // Si tienes IDs de unidades que deseas asociar, puedes hacer algo como esto:
     if (unityIds && unityIds.length > 0) {
-
         const unidadesEncontradas = await Unity.findAll({
             where: {
                 id: unityIds,
@@ -17,9 +17,7 @@ async function crearProducto(data, unityIds) {
         });
         await nuevoProducto.addUnity(unidadesEncontradas);
     }
-
     return nuevoProducto;
-
 }
 
 // Obtener todos los productos
@@ -48,12 +46,33 @@ async function actualizarProducto(id, data) {
 
 // Eliminar un producto
 async function eliminarProducto(id) {
-    const productoEliminado = await Product.destroy({
-        where: { id },
-    });
-    if (!productoEliminado) {
+    const producto = await Product.findByPk(productId);
+    
+    //Eliminar la imagen si existe
+    if (producto.url_imagen) {        
+        const imagePath = path.join(
+            __dirname, '..', 
+            'public', 'images', 'products', 
+            producto.url_imagen
+        );
+        try {
+            await deleteFile(imagePath);
+        } catch (error) {
+            console.error('Error eliminando imagen:', error.message);
+        }
+    }
+    await producto.destroy();    
+    return true;
+
+}
+
+async function eliminarProductoInUnid(productId, unityId) {
+    const producto = await Product.findByPk(productId);
+    if (!producto) {
         throw new Error('Producto no encontrado');
     }
+    await producto.removeUnity(unityId); 
+    //console.log(`Relación eliminada: Producto ${productId} de Unidad ${unityId}`);
 }
 
 module.exports = {
@@ -62,4 +81,5 @@ module.exports = {
     obtenerProductoById,
     actualizarProducto,
     eliminarProducto,
+    eliminarProductoInUnid
 };

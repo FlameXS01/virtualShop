@@ -11,6 +11,7 @@ const User = sequelize.define('user', {
             isEmail: true,
         },
     },
+    
     phone_number: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -29,6 +30,10 @@ const User = sequelize.define('user', {
         type: DataTypes.ENUM("usuario", "administrador"),
         allowNull: false,
         defaultValue: "usuario",
+    },
+    url_imagen: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
 }, {
     timestamps: true,

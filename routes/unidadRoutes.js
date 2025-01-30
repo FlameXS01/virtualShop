@@ -6,6 +6,7 @@ const {
     obtenerUnidadById,
     actualizarUnidad,
     eliminarUnidad,
+    prodByUnid,
 } = require('../controllers/unidadController'); 
 
 /**
@@ -166,6 +167,87 @@ router.delete ('/del-unidades/:id', async (req, res) => {
     try {
         await eliminarUnidad(id); 
         res.status(204).send(); 
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /api/u/get-prodByUnid/{id}:
+ *   get:
+ *     summary: Obtener productos por ID de unidad
+ *     tags: [Productos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la unidad para obtener los productos asociados
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: Productos obtenidos exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID del producto
+ *                   cod_ub:
+ *                     type: string
+ *                     description: Código de ubicación del producto
+ *                   cod_prod:
+ *                     type: string
+ *                     description: Código del producto
+ *                   desc_prod:
+ *                     type: string
+ *                     description: Descripción del producto
+ *                   h_much:
+ *                     type: integer
+ *                     description: Cantidad del producto
+ *                   unit:
+ *                     type: string
+ *                     description: Unidad de medida del producto
+ *                   price:
+ *                     type: number
+ *                     format: float
+ *                     description: Precio del producto
+ *                   url_imagen:
+ *                     type: string
+ *                     description: URL de la imagen del producto
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                     description: Fecha de creación del producto
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *                     description: Fecha de actualización del producto
+ *                   deletedAt:
+ *                     type: string
+ *                     format: date-time
+ *                     description: Fecha de eliminación del producto (si aplica)
+ *       404:
+ *         description: No se encontraron productos para la unidad especificada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Mensaje de error
+ */
+router.get ('/get-prodByUnid/:id', async (req, res) => {
+    const { id } = req.params; 
+    try {
+        const prod = await prodByUnid(id); 
+        res.status(200).json(prod); 
     } catch (error) {
         res.status(404).json({ error: error.message });
     }

@@ -42,10 +42,22 @@ async function eliminarUnidad(id) {
     }
 }
 
+async function prodByUnid( id ){
+    const unidad =  await obtenerUnidadById(id);
+    const {products} = unidad;
+    if(products){
+        return await products;
+    }
+    return null;
+
+}
+
+// Poroductos por Unidad
 module.exports = {
     crearUnidad,
     obtenerUnidades,
     obtenerUnidadById,
     actualizarUnidad,
     eliminarUnidad,
+    prodByUnid
 };
