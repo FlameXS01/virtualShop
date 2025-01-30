@@ -1,4 +1,4 @@
-const Inventario = require('../models/Inventario'); 
+const Inventario = require('../models/inventario'); 
 
 // Crear un nuevo inventario
 async function crearInventario(data) {
