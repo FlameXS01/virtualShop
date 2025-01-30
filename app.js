@@ -59,7 +59,7 @@ sequelize.sync({ force: true })
     logger.info("Todos los modelos se sincronizaron correctamente."); // Usa logger aquí
   })
   .catch((err) => {
-    logger.error("Ha ocurrido un error al sincronizar los modelos: ", err); // Usa logger aquí
+    console.error("Ha ocurrido un error al sincronizar los modelos: ", err); // Usa logger aquí
   });
 
   app.use(errorHandler);
