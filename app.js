@@ -61,6 +61,10 @@ sequelize.sync({ force: true })
   .catch((err) => {
     console.error("Ha ocurrido un error al sincronizar los modelos: ", err); // Usa logger aquí
   });
+  
+  const pg = require("pg");
+  console.log("Versión de pg:", pg.version); // Debe mostrar 8.13.1
+  console.log("Client de pg:", pg.Client); // Debe ser una función
 
   app.use(errorHandler);
   app.use(requestLogger);
