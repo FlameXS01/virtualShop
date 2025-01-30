@@ -12,9 +12,14 @@ const DB_PORT = process.env.DB_PORT;
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
     dialect: DB_DIALECT,
-    logging: false,
     port: DB_PORT,
-    logging: console.log,
+    logging: console.log, // Solo esta línea para logging
+    dialectOptions: { // <-- Agrega esto para SSL
+        ssl: {
+        require: true,
+        rejectUnauthorized: false, // Necesario para Supabase
+        },
+    },
 });
 
 
