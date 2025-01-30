@@ -14,6 +14,7 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     dialect: DB_DIALECT,
     logging: false,
     port: DB_PORT,
+    logging: console.log,
 });
 
 
