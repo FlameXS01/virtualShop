@@ -9,6 +9,8 @@ const DB_DIALECT = process.env.DB_DIALECT;
 const DB_HOST = process.env.HOST;
 const DB_PORT = process.env.DB_PORT;
 
+console.log('name', DB_NAME, '>>>user', DB_PASSWORD, '>>>dial', DB_DIALECT, '>>>> host ', HOST, 'port ', DB_PORT);
+
 // Conexión a la base de datos
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
