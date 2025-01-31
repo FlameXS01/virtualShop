@@ -46,7 +46,7 @@ async function actualizarProducto(id, data) {
 
 // Eliminar un producto
 async function eliminarProducto(id) {
-    const producto = await Product.findByPk(productId);
+    const producto = await Product.findByPk(id);
     
     //Eliminar la imagen si existe
     if (producto.url_imagen) {        
