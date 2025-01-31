@@ -6,10 +6,9 @@ const DB_NAME = process.env.DB_NAME;
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_DIALECT = process.env.DB_DIALECT;
-const DB_HOST = process.env.HOST;
+const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT;
 
-console.log('name', DB_NAME, '>>>user', DB_PASSWORD, '>>>dial', DB_DIALECT, '>>>> host ', HOST, 'port ', DB_PORT);
 
 // Conexión a la base de datos
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
@@ -17,15 +16,8 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     dialect: DB_DIALECT,
     port: DB_PORT,
     logging: console.log, // Solo esta línea para logging
-    native: true,
     dialectModule: pg,
-    dialectOptions: { // <-- Agrega esto para SSL
-        ssl: {
-        require: true,
-        rejectUnauthorized: false, // Necesario para Supabase
-        },
-    },
+    // Elimina dialectOptions si no es necesario
 });
-
 
 module.exports = sequelize;
