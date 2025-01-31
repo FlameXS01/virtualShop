@@ -39,7 +39,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Configuración de CORS
-const allowedOrigins = ['http://localhost:3000']; // Agrega tus orígenes permitidos aquí
+const allowedOrigins = ['http://localhost:3000', 'https://virtualshop.onrender.com']; // Agrega tus orígenes permitidos aquí
 
 app.use(
   cors({
