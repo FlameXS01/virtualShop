@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../helpers/database');
 const bcrypt = require('bcryptjs'); // Asegúrate de instalar bcryptjs
+const { toDefaultValue } = require('sequelize/lib/utils');
 
 const User = sequelize.define('user', {
     email: {
@@ -35,6 +36,14 @@ const User = sequelize.define('user', {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    twoFactorSecret: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    twoFactorEnabled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
 }, {
     timestamps: true,
     paranoid: true,
@@ -46,5 +55,4 @@ User .beforeCreate(async (user) => {
     user.password = await bcrypt.hash(user.password, salt); 
 });
 
-// Exportar el modelo
 module.exports = User;  

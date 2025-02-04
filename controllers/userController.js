@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); 
 const path = require('path');
 const deleteFile  = require('../utils/fileUtils');
+const speakeasy = require('speakeasy');
+const QRCode = require('qrcode');
 
 // Crear un nuevo usuario
 async function crearUsuario(data) {
@@ -151,6 +153,37 @@ async function obtenerPerfilUsuario(id) {
     
     return usuario;
 }
+async function verifyTwoFactorToken(userId, code){
+    const usuario = await User.findByPk(userId);
+
+    const secret = usuario.twoFactorSecret;
+    const isValid = speakeasy.totp.verify({
+        secret: secret,
+        encoding: 'base32',
+        token: code
+    });
+    if (!isValid){
+        throw new Error ('Code not valid');
+    }
+    await usuario.update({twoFactorEnabled: true});
+    return {success: true};
+}
+
+async function validateTwoFactorToken(userId, code){
+    const usuario = await User.findByPk(userId);
+    if (!usuario.twoFactorEnabled){
+        throw new Error ('No tiene 2fa habilitado');
+    }
+    const isValid = speackeasy.totp.verify({
+        secret: usuario.twoFactorSecret,
+        encoding:'base32',
+        token: code
+    });
+    if(!isValid){
+        throw new Error ('No tiene 2fa habilitado, not valid');
+    }
+    return {success: true};
+}
 
 async function invalidarRefreshToken(userId) {
     try {
@@ -175,6 +208,31 @@ async function invalidarRefreshToken(userId) {
         throw error; // Opcional: relanzar el error para manejo superior
     }
 }
+async function genTwoFactor(userId) {
+    try{
+        const user = await User.findByPk(userId);
+        if(!user){
+            throw new Error('usuario no encontrado');
+        }
+        const secret = speakeasy.generateSecret({
+            name:`Virtual Rt:${user.email}`,
+            length: 20
+        });
+        await user.update({twoFactorSecret: secret.base32});
+        const qrCodeUrl = await QRCode.toDataUrl(secret.tpauth_url);
+        return {
+            secret: secret.base32,
+            qrCode: qrCodeUrl
+        };
+
+    } catch (error) {
+        console.error('Error creando el 2fa:', error);
+        throw error;
+    }
+
+}
+
+
 
 module.exports = {
     crearUsuario,
@@ -184,5 +242,8 @@ module.exports = {
     eliminarUsuario,
     iniciarSesion,
     obtenerPerfilUsuario,
-    invalidarRefreshToken
+    invalidarRefreshToken, 
+    genTwoFactor, 
+    verifyTwoFactorToken,
+    validateTwoFactorToken
 };

@@ -14,7 +14,11 @@ const {
     iniciarSesion,
     obtenerPerfilUsuario,
     invalidarRefreshToken,
+    genTwoFactor,
+    verifyTwoFactorToken,
+    validateTwoFactorToken
 } = require('../controllers/userController'); // Asegúrate de tener un controlador para el modelo User
+const User = require('../models/user');
 
 /**
  * @swagger
@@ -374,5 +378,56 @@ router.get("/imagen/:filename", (req, res, next) => {
         next(error);
     }
 });
+
+router.get('/2fa/status', async (req,res,next) => {
+    try{
+        const user = await User.findByPk(req.userData.id);
+        res.json({
+            enabled: user.twoFactorEnabled || false
+        }); 
+    } catch (error) {
+        next(error);
+    }
+});
+router.get('/2fa/generate', async(req,res,next) => {
+    try{
+        const {secret, qrCode } = genTwoFactor(req.userData.id);
+        res.json({ secret , qrCode});
+    } catch (error) {
+        next(error);
+    }
+});
+router.get('/2fa/verify', async (req,res,next) => {
+    try{
+        const { code } = req.body;
+        const result = await validateTwoFactorToken(req.userData.id, code);
+        res.json(result);
+    } catch (error) {
+        next(error);
+    }
+});
+router.get('/2fa/validate', async(req,res,next) => {
+    try{
+        const {code} = req.body;
+        const result = await validateTwoFactorToken(req.userData.id, code);
+        res.json(result);
+    } catch (error){
+        next(error);
+    }
+});
+router.get('/2fa/disable', async(req,res,next) => {
+    try{
+        const user = await User.findByPk(req.userData.id);
+        await user.update({
+            twoFactorEnabled: false,
+            twoFactorSecret: null``
+        });
+        res.json({success: true, message: '2FA desactivado exitosamente'});
+    } catch (error){
+        next(error);
+    }
+});
+
+
 
 module.exports = router;
