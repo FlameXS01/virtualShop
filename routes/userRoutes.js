@@ -400,7 +400,7 @@ router.get('/2fa/generate', async(req,res,next) => {
 router.get('/2fa/verify', async (req,res,next) => {
     try{
         const { code } = req.body;
-        const result = await validateTwoFactorToken(req.userData.id, code);
+        const result = await verifyTwoFactorToken(req.userData.id, code);
         res.json(result);
     } catch (error) {
         next(error);
