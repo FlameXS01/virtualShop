@@ -398,14 +398,17 @@ router.post('/2fa/generate', authenticate(["administrador", "usuario"]), async(r
         next(error);
     }
 });
-router.post('/2fa/verify', authenticate(["administrador", "usuario"]), async (req,res,next) => {
-    try{
+router.post('/2fa/verify', authenticate(["administrador", "usuario"]), async (req, res, next) => {
+    try {
         const { code } = req.body;
-        console.log(code); 
+        if (!code || code.length !== 6) {
+            return res.status(400).json({ error: "Código inválido" });
+        }
         const result = await verifyTwoFactorToken(req.userData.id, code);
         res.json(result);
     } catch (error) {
-        next(error);
+        console.error('Error en /2fa/verify:', error.message);
+        res.status(400).json({ error: error.message }); 
     }
 });
 router.post('/2fa/validate', authenticate(["administrador", "usuario"]), async(req,res,next) => {

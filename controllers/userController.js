@@ -153,22 +153,36 @@ async function obtenerPerfilUsuario(id) {
     
     return usuario;
 }
-async function verifyTwoFactorToken(userId, code){
+async function verifyTwoFactorToken(userId, code) {
     const usuario = await User.findByPk(userId);
+    if (!usuario) throw new Error('Usuario no encontrado');
+    if (!usuario.twoFactorSecret) throw new Error('2FA no configurado');
 
-    const secret = usuario.twoFactorSecret;
+    console.log('[DEBUG] Secret en BD:', usuario.twoFactorSecret); // 
+
+    console.log('[DEBUG] Código recibido:', code); // 
+
+    const currentCode = speakeasy.totp({
+
+        secret: usuario.twoFactorSecret,
+    
+        encoding: 'base32'
+    
+    });
+    
+    console.log('[DEBUG] Código esperado:', currentCode); 
+
     const isValid = speakeasy.totp.verify({
-        secret: secret,
+        secret: usuario.twoFactorSecret,
         encoding: 'base32',
         token: code,
-        window:1
+        window: 1 
     });
-    console.log('>>>>>..', isValid);
-    if (!isValid){
-        throw new Error ('Code not valid');
+    if (!isValid) throw new Error('Código inválido');
+    if (!usuario.twoFactorEnabled) {
+        await usuario.update({ twoFactorEnabled: true });
     }
-    await usuario.update({twoFactorEnabled: true});
-    return {success: true};
+    return { success: true };
 }
 
 async function validateTwoFactorToken(userId, code){
