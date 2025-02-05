@@ -190,7 +190,7 @@ async function validateTwoFactorToken(userId, code){
     if (!usuario.twoFactorEnabled){
         throw new Error ('No tiene 2fa habilitado');
     }
-    const isValid = speackeasy.totp.verify({
+    const isValid = speakeasy.totp.verify({
         secret: usuario.twoFactorSecret,
         encoding:'base32',
         token: code

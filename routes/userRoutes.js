@@ -4,6 +4,8 @@ const authenticate = require('../middlewares/authenticate');
 const { upload } = require("../config/multerConfig");
 const  deleteFile  = require('../utils/fileUtils');
 const path = require('path');
+const speakeasy = require('speakeasy');
+const QRCode = require('qrcode');
 
 const {
     crearUsuario,
