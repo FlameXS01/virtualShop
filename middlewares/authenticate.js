@@ -9,7 +9,7 @@ const authenticate = (roles) => {
     if(!authHeader){
       return next(new AppError("Necesita iniciar sesión", 403));
     }
-   
+  
     const token = authHeader.split(" ")[1];
     //console.log("token", token)
     try{

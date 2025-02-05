@@ -56,15 +56,13 @@ app.use('/api', routes); // Prefijo para todas las rutas
 // Sincronización de modelos
 sequelize.sync({ alter: true })
   .then(() => {
-    logger.info("Todos los modelos se sincronizaron correctamente."); // Usa logger aquí
+    console.info("Todos los modelos se sincronizaron correctamente."); // Usa logger aquí
   })
-  .catch((err) => {
+  .catch((err) => { 
     console.error("Ha ocurrido un error al sincronizar los modelos: ", err); // Usa logger aquí
   });
   
-  const pg = require("pg");
-  console.log("Versión de pg:", pg.version); // Debe mostrar 8.13.1
-  console.log("Client de pg:", pg.Client); // Debe ser una función
+  
 
   app.use(errorHandler);
   app.use(requestLogger);

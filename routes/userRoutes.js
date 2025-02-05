@@ -379,34 +379,36 @@ router.get("/imagen/:filename", (req, res, next) => {
     }
 });
 
-router.get('/2fa/status', async (req,res,next) => {
+router.get('/2fa/status', authenticate(["administrador", "usuario"]), async (req,res,next) => {
     try{
         const user = await User.findByPk(req.userData.id);
         res.json({
             enabled: user.twoFactorEnabled || false
         }); 
     } catch (error) {
+        console.error('>>>>>>>>>>>>>>>>>>>', error.message);
         next(error);
     }
 });
-router.get('/2fa/generate', async(req,res,next) => {
+router.post('/2fa/generate', authenticate(["administrador", "usuario"]), async(req,res,next) => {
     try{
-        const {secret, qrCode } = genTwoFactor(req.userData.id);
-        res.json({ secret , qrCode});
+        const {secret, qrCode } = await genTwoFactor(req.userData.id);
+        res.status(200).json({ secret , qrCode});
     } catch (error) {
         next(error);
     }
 });
-router.get('/2fa/verify', async (req,res,next) => {
+router.post('/2fa/verify', authenticate(["administrador", "usuario"]), async (req,res,next) => {
     try{
         const { code } = req.body;
+        console.log(code); 
         const result = await verifyTwoFactorToken(req.userData.id, code);
         res.json(result);
     } catch (error) {
         next(error);
     }
 });
-router.get('/2fa/validate', async(req,res,next) => {
+router.post('/2fa/validate', authenticate(["administrador", "usuario"]), async(req,res,next) => {
     try{
         const {code} = req.body;
         const result = await validateTwoFactorToken(req.userData.id, code);
@@ -415,7 +417,7 @@ router.get('/2fa/validate', async(req,res,next) => {
         next(error);
     }
 });
-router.get('/2fa/disable', async(req,res,next) => {
+router.post('/2fa/disable', authenticate(["administrador", "usuario"]), async(req,res,next) => {
     try{
         const user = await User.findByPk(req.userData.id);
         await user.update({

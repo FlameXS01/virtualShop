@@ -15,7 +15,7 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
     dialect: DB_DIALECT,
     port: DB_PORT,
-    logging: console.log, // Solo esta línea para logging
+    logging: false, // Solo esta línea para logging
     dialectModule: pg,
     
     // Elimina dialectOptions si no es necesario

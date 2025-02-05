@@ -160,8 +160,10 @@ async function verifyTwoFactorToken(userId, code){
     const isValid = speakeasy.totp.verify({
         secret: secret,
         encoding: 'base32',
-        token: code
+        token: code,
+        window:1
     });
+    console.log('>>>>>..', isValid);
     if (!isValid){
         throw new Error ('Code not valid');
     }
@@ -185,29 +187,6 @@ async function validateTwoFactorToken(userId, code){
     return {success: true};
 }
 
-async function invalidarRefreshToken(userId) {
-    try {
-        // Añadir await para obtener la instancia del usuario
-        const user = await User.findByPk(userId);
-
-        
-        if (!user) {
-            console.log('Usuario no encontrado:' , userId);
-            return null;
-        }
-
-        user.refreshToken = null;
-        
-        // Guardar los cambios en la base de datos
-        await user.save();
-        
-        return user;
-        
-    } catch (error) {
-        console.error('Error al cerrar sesion:', error);
-        throw error; // Opcional: relanzar el error para manejo superior
-    }
-}
 async function genTwoFactor(userId) {
     try{
         const user = await User.findByPk(userId);
@@ -219,17 +198,33 @@ async function genTwoFactor(userId) {
             length: 20
         });
         await user.update({twoFactorSecret: secret.base32});
-        const qrCodeUrl = await QRCode.toDataUrl(secret.tpauth_url);
+        const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);
         return {
             secret: secret.base32,
             qrCode: qrCodeUrl
         };
-
+        
     } catch (error) {
         console.error('Error creando el 2fa:', error);
         throw error;
+    }    
+}
+async function invalidarRefreshToken(userId) {
+    try {
+        const user = await User.findByPk(userId);
+        if (!user) {
+            console.log('Usuario no encontrado:' , userId);
+            return null;
+        }
+        user.refreshToken = null;
+        await user.save();
+        
+        return user;
+        
+    } catch (error) {
+        console.error('Error al cerrar sesion:', error);
+        throw error; // Opcional: relanzar el error para manejo superior
     }
-
 }
 
 
