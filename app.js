@@ -63,7 +63,7 @@ sequelize.sync({ force: true })
   });
   
   
-
+  
   app.use(errorHandler);
   app.use(requestLogger);
 // Iniciar el servidor
