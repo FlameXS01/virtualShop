@@ -54,7 +54,7 @@ app.use('/api', routes); // Prefijo para todas las rutas
 
 
 // Sincronización de modelos
-sequelize.sync({ force: true })
+sequelize.sync({ alter: true })
   .then(() => {
     console.info("Todos los modelos se sincronizaron correctamente."); // Usa logger aquí
   })
